@@ -1,2 +1,2 @@
-# streamline-bank
-this is a sleek banking interface
+# Streamline-online-banking
+A sleek banking platform

@@ -9,7 +9,7 @@ COPY . .
 
 # Install dependencies (build.sh handles this)
 RUN chmod +x /app/build.sh
-RUN /app/build.sh
+RUN bash /app/build.sh
 
 # Make the entrypoint script executable
 RUN chmod +x /app/entrypoint.sh

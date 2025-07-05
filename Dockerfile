@@ -4,10 +4,8 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
-# Copy your project files into the image
 COPY . .
 
-# Install dependencies (build.sh handles this)
 RUN chmod +x /app/build.sh
 RUN bash /app/build.sh
 

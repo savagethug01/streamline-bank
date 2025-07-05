@@ -6,8 +6,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN chmod +x /app/build.sh
-RUN bash /app/build.sh
+RUN chmod +x /app/setup.sh
+RUN bash /app/setup.sh
+
 
 # Make the entrypoint script executable
 RUN chmod +x /app/entrypoint.sh

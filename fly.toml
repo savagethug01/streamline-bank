@@ -11,10 +11,6 @@ primary_region = 'cdg'
   PORT = "1641"
   DJANGO_SETTINGS_MODULE = "BANK.settings"
 
-# Run database migrations and collect static files after each deploy
-[deploy]
-release_command = "./release.sh"
-
 [http_service]
   internal_port = 1641
   force_https = true
@@ -32,3 +28,6 @@ release_command = "./release.sh"
 [[statics]]
   guest_path = '/code/staticfiles'
   url_prefix = '/static/'
+
+[deploy]
+  release_command = "bash /code/BANK/release.sh"

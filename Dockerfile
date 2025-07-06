@@ -1,37 +1,30 @@
-# Use official slim Python image
-FROM python:3.11-slim
+ARG PYTHON_VERSION=3.13-slim
 
-# Set environment variables to improve performance and disable prompts
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_ROOT_USER_ACTION=ignore \
-    DJANGO_SUPPRESS_PROMPTS=true
+FROM python:${PYTHON_VERSION}
 
-# Set working directory
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Install system dependencies for building Python packages and PostgreSQL support
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+# install psycopg2 dependencies.
+RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install Python dependencies
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+RUN mkdir -p /code
 
-# Copy the entire Django project
-COPY . .
+WORKDIR /code
 
-# Ensure static files are collected
-RUN python manage.py collectstatic --no-input
+COPY requirements.txt /tmp/requirements.txt
+RUN set -ex && \
+    pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    rm -rf /root/.cache/
+COPY . /code
 
-# Ensure the entrypoint script is executable
-RUN chmod +x /app/entrypoint.sh
+ENV SECRET_KEY "SmX7itP4Wz5mcWE4VhfVUDGwjsgRIw04VKnC8hJEnxapS7fSqo"
+RUN python manage.py collectstatic --noinput
 
-# Expose the port used by Django dev server
-EXPOSE 8090
+EXPOSE 8000
 
-# Set the default command to run the app
-ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gunicorn","--bind",":8000","--workers","2","BANK.wsgi"]

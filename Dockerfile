@@ -10,13 +10,13 @@ ENV MISE_SETTINGS_PYTHON_COMPILE=${MISE_SETTINGS_PYTHON_COMPILE}
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install build dependencies for psycopg2 etc.
+# Install system dependencies (e.g., for psycopg2)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Create working directory
 RUN mkdir -p /code
 WORKDIR /code/BANK
 
@@ -24,11 +24,15 @@ WORKDIR /code/BANK
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --upgrade pip && pip install -r /tmp/requirements.txt
 
-# Copy the rest of the project
+# Copy project source
 COPY . /code
+
+# Copy release script and make it executable
+COPY release.sh /code/BANK/release.sh
+RUN chmod +x /code/BANK/release.sh
 
 # Expose Django/gunicorn port
 EXPOSE 1641
 
-# Start the app with gunicorn
+# Start Gunicorn server
 CMD ["gunicorn", "--bind", ":1641", "--workers", "2", "BANK.wsgi"]

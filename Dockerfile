@@ -1,30 +1,33 @@
 ARG PYTHON_VERSION=3.13-slim
-
 FROM python:${PYTHON_VERSION}
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install psycopg2 dependencies.
+# Install psycopg2 dependencies
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
+# Create working directory
 RUN mkdir -p /code
-
 WORKDIR /code
 
+# Install dependencies
 COPY requirements.txt /tmp/requirements.txt
-RUN set -ex && \
-    pip install --upgrade pip && \
-    pip install -r /tmp/requirements.txt && \
-    rm -rf /root/.cache/
+RUN pip install --upgrade pip && pip install -r /tmp/requirements.txt
+
+# Copy project
 COPY . /code
 
-ENV SECRET_KEY "SmX7itP4Wz5mcWE4VhfVUDGwjsgRIw04VKnC8hJEnxapS7fSqo"
-RUN python manage.py collectstatic --noinput
+# Don't collectstatic at build — do it after deploy
+# RUN python manage.py collectstatic --noinput  ❌ REMOVE THIS
+
+# Don't hardcode SECRET_KEY here
+# ENV SECRET_KEY "..." ❌ REMOVE THIS
 
 EXPOSE 1641
 
-CMD ["gunicorn","--bind",":1641","--workers","2","BANK.wsgi"]
+# Run with Gunicorn
+CMD ["gunicorn", "--bind", ":1641", "--workers", "2", "BANK.wsgi"]

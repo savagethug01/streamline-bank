@@ -1,10 +1,10 @@
-# Ensure mise compiles Python rather than using broken prebuilt versions
-ARG MISE_SETTINGS_PYTHON_COMPILE=1
-ENV MISE_SETTINGS_PYTHON_COMPILE=${MISE_SETTINGS_PYTHON_COMPILE}
-
 # Base image
 ARG PYTHON_VERSION=3.13-slim
 FROM python:${PYTHON_VERSION}
+
+# Ensure mise compiles Python rather than using broken prebuilt versions
+ARG MISE_SETTINGS_PYTHON_COMPILE=1
+ENV MISE_SETTINGS_PYTHON_COMPILE=${MISE_SETTINGS_PYTHON_COMPILE}
 
 # Environment setup
 ENV PYTHONDONTWRITEBYTECODE 1

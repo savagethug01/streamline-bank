@@ -5,12 +5,8 @@
 
 app = 'streamline-bank'
 primary_region = 'cdg'
-console_command = '/code/manage.py shell'
 
 [build]
-
-[deploy]
-  release_command = 'python manage.py migrate --noinput'
 
 [env]
   PORT = '1641'
@@ -29,5 +25,5 @@ console_command = '/code/manage.py shell'
   cpus = 1
 
 [[statics]]
-  guest_path = '/code/static'
+  guest_path = '/BANK/static'
   url_prefix = '/static/'

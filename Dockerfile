@@ -1,3 +1,8 @@
+# force mise to compile python instead of using broken prebuilt archives
+ARG MISE_SETTINGS_PYTHON_COMPILE=1
+ENV MISE_SETTINGS_PYTHON_COMPILE=${MISE_SETTINGS_PYTHON_COMPILE}
+
+# rest of your Dockerfile
 ARG PYTHON_VERSION=3.13-slim
 FROM python:${PYTHON_VERSION}
 

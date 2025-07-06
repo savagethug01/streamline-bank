@@ -25,6 +25,6 @@ COPY . /code
 ENV SECRET_KEY "SmX7itP4Wz5mcWE4VhfVUDGwjsgRIw04VKnC8hJEnxapS7fSqo"
 RUN python manage.py collectstatic --noinput
 
-EXPOSE 8000
+EXPOSE 1641
 
-CMD ["gunicorn","--bind",":8000","--workers","2","BANK.wsgi"]
+CMD ["gunicorn","--bind",":1641","--workers","2","BANK.wsgi"]

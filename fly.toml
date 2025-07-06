@@ -12,7 +12,7 @@ primary_region = 'cdg'
 
 # Run database migrations and collect static files after each deploy
 [deploy]
-  release_command = "python manage.py migrate && RUN python BANK/manage.py collectstatic --noinput"
+  release_command = "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
 
 [http_service]
   internal_port = 1641

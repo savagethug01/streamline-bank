@@ -1,7 +1,5 @@
 # fly.toml app configuration file generated for streamline-bank on 2025-07-06T04:50:04-07:00
-#
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
 
 app = 'streamline-bank'
 primary_region = 'cdg'
@@ -10,6 +8,10 @@ primary_region = 'cdg'
 
 [env]
   PORT = '1641'
+
+# Run database migrations and collect static files after each deploy
+[deploy]
+  release_command = "python manage.py migrate && python manage.py collectstatic --noinput"
 
 [http_service]
   internal_port = 1641
@@ -24,6 +26,7 @@ primary_region = 'cdg'
   cpu_kind = 'shared'
   cpus = 1
 
+# Serve static files from Django’s STATIC_ROOT
 [[statics]]
-  guest_path = '/BANK/static'
+  guest_path = '/code/staticfiles'
   url_prefix = '/static/'

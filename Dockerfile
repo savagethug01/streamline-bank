@@ -1,33 +1,37 @@
-FROM python:3.12-slim
+# Use official slim Python image
+FROM python:3.11-slim
 
+# Set environment variables to improve performance and disable prompts
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_ROOT_USER_ACTION=ignore \
+    DJANGO_SUPPRESS_PROMPTS=true
+
+# Set working directory
 WORKDIR /app
 
-# Install build dependencies (needed for some Python packages and mise-managed tools)
-RUN apt-get update && apt-get install -y \
-    curl git build-essential zlib1g-dev libssl-dev libbz2-dev libreadline-dev \
-    libsqlite3-dev ca-certificates xz-utils \
+# Install system dependencies for building Python packages and PostgreSQL support
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Install mise (optional — only keep if you’re using it for tools like node, poetry, etc.)
-RUN curl https://mise.run | sh
+# Upgrade pip and install Python dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Add mise to PATH
-ENV PATH="/root/.local/share/mise/bin:/root/.local/share/mise/shims:$PATH"
-
-# Disable Python installation via mise (since python is already installed via base image)
-RUN echo "python disable" >> /root/.tool-versions
-
-# Copy project files
+# Copy the entire Django project
 COPY . .
 
-# Run setup script
-RUN chmod +x /app/setup.sh && bash /app/setup.sh
+# Ensure static files are collected
+RUN python manage.py collectstatic --no-input
 
-# Make entrypoint executable
+# Ensure the entrypoint script is executable
 RUN chmod +x /app/entrypoint.sh
 
-# Expose Django development server port
+# Expose the port used by Django dev server
 EXPOSE 8090
 
-# Use entrypoint to run Django
-CMD ["/app/entrypoint.sh"]
+# Set the default command to run the app
+ENTRYPOINT ["/app/entrypoint.sh"]

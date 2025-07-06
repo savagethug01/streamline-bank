@@ -51,8 +51,13 @@ SECRET_KEY = 'django-insecure-4rd#l1#43)5*ebjwuix9)m+tzvb282c^!s%*0y8j0farxs+u6s
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = ['streamline-bank.fly.dev']
 
-ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://streamline-bank.fly.dev",
+]
+
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dlzn0moho',
